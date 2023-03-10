@@ -6,12 +6,11 @@ import Typography from "@mui/material/Typography";
 import Button from "@mui/material/Button";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import logo from "../assets/MAICON.ico"; // import your logo here
-import { border, textAlign } from "@mui/system";
+import logo from "../assets/MAICON.ico";
 
-export default function ButtonAppBar() {
+function Header() {
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box sx={{ flexGrow: 1, backgroundColor: "#FFCCCB" }}>
       <AppBar position="static">
         <Toolbar>
           <IconButton
@@ -47,3 +46,5 @@ export default function ButtonAppBar() {
     </Box>
   );
 }
+
+export default Header;
