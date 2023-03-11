@@ -130,6 +130,7 @@ const SearchForm = () => {
                       margin={0.5}
                       textAlign="center"
                       borderTop="2px solid lightgrey"
+                      maxWidth={200}
                     >
                       {tvshow.show.name}
                     </Typography>
