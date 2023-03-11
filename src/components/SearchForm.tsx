@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import axios from "axios";
-import { Box, Button, CardMedia, TextField, Typography } from "@mui/material";
+import { Box, Button, Grow, TextField, Typography } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
 
@@ -18,6 +18,7 @@ const SearchForm = () => {
   const [userSearch, setUserSearch] = useState("");
   const [tvShows, setTVShows] = useState<TVShow[]>([]);
   const [formIsSubmitted, setFormIsSubmitted] = useState(false);
+  const [checked, setChecked] = useState(false);
 
   const formSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -26,6 +27,7 @@ const SearchForm = () => {
     );
     setTVShows(response.data);
     setFormIsSubmitted(true);
+    setChecked(true);
     setUserSearch("");
   };
 
@@ -73,61 +75,70 @@ const SearchForm = () => {
                 width: "100%",
                 marginLeft: 0,
               }}
+              component="button"
             >
               Search
             </Button>
           </form>
         </Box>
       </Box>
+
       {formIsSubmitted && (
-        <Box
-          display="flex"
-          flexWrap="wrap"
-          justifyContent="center"
-          sx={{
-            backgroundColor: "#745fd0",
-            backgroundImage:
-              "linear-gradient(45deg, #745fd0 0%, #6178c4 19%, #5558b6 39%, #f889f3 60%, #bc74ce 80%, #e186d1 100%)",
-
-            padding: 2,
-            borderRadius: "25px",
-            margin: 3,
-          }}
+        <Grow
+          in={checked}
+          style={{ transformOrigin: "0 0 0" }}
+          {...(checked ? { timeout: 2500 } : {})}
         >
-          {tvShows.map((tvshow) => (
-            <Card
-              variant="outlined"
-              sx={{
-                margin: "0.5em",
-                borderRadius: "15px",
-                background: "black",
-                color: "white",
-              }}
-              color="primary"
-            >
-              <CardContent>
-                <Box key={tvshow.show.id}>
-                  {tvshow.show.image && (
-                    <img
-                      src={tvshow.show.image.medium}
-                      alt={tvshow.show.name}
-                    />
-                  )}
+          <Box
+            display="flex"
+            flexWrap="wrap"
+            justifyContent="center"
+            sx={{
+              backgroundColor: "#745fd0",
+              backgroundImage:
+                "linear-gradient(45deg, #745fd0 0%, #6178c4 19%, #5558b6 39%, #f889f3 60%, #bc74ce 80%, #e186d1 100%)",
 
-                  <Typography
-                    variant="h6"
-                    fontWeight="bold"
-                    margin={0.5}
-                    textAlign="center"
-                    borderTop="2px solid lightgrey"
-                  >
-                    {tvshow.show.name}
-                  </Typography>
-                </Box>
-              </CardContent>
-            </Card>
-          ))}
-        </Box>
+              padding: 2,
+              borderRadius: "25px",
+              margin: 3,
+            }}
+          >
+            {tvShows.map((tvshow) => (
+              <Card
+                key={tvshow.show.id}
+                variant="outlined"
+                sx={{
+                  margin: "0.5em",
+                  borderRadius: "15px",
+                  background: "black",
+                  color: "white",
+                }}
+                color="primary"
+              >
+                <CardContent>
+                  <Box>
+                    {tvshow.show.image && (
+                      <img
+                        src={tvshow.show.image.medium}
+                        alt={tvshow.show.name}
+                      />
+                    )}
+
+                    <Typography
+                      variant="h6"
+                      fontWeight="bold"
+                      margin={0.5}
+                      textAlign="center"
+                      borderTop="2px solid lightgrey"
+                    >
+                      {tvshow.show.name}
+                    </Typography>
+                  </Box>
+                </CardContent>
+              </Card>
+            ))}
+          </Box>
+        </Grow>
       )}
     </>
   );
