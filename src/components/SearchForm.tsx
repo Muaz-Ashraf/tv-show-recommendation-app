@@ -25,7 +25,10 @@ const SearchForm = () => {
     const response = await axios.get(
       `https://api.tvmaze.com/search/shows?q=${userSearch}`
     );
-    setTVShows(response.data);
+    const filteredShows = response.data.filter((tvShow: TVShow) => {
+      return tvShow.show.image !== null;
+    });
+    setTVShows(filteredShows);
     setFormIsSubmitted(true);
     setChecked(true);
     setUserSearch("");
