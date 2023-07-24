@@ -37,9 +37,10 @@ const SearchForm = () => {
     const response = await axios.get(
       `https://api.tvmaze.com/search/shows?q=${userSearch}`
     );
-    const filteredShows = response.data.filter((tvShow: TVShow) => {
-      return tvShow.show.image !== null;
-    });
+    const filteredShows = response.data.filter(
+      (tvShow: TVShow) => tvShow.show.image !== null
+    );
+
     setTVShows(filteredShows);
     console.log(response.data);
     setFormIsSubmitted(true);
