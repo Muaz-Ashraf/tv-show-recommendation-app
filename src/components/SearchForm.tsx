@@ -1,8 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Box, Button, Grow, TextField, Typography } from "@mui/material";
+import {
+  Box,
+  Button,
+  CircularProgress,
+  Grow,
+  TextField,
+  Typography,
+  IconButton,
+} from "@mui/material";
 import Card from "@mui/material/Card";
 import CardContent from "@mui/material/CardContent";
+import { useNavigate } from "react-router-dom";
 
 interface TVShow {
   show: {
@@ -19,16 +28,20 @@ const SearchForm = () => {
   const [tvShows, setTVShows] = useState<TVShow[]>([]);
   const [formIsSubmitted, setFormIsSubmitted] = useState(false);
   const [checked, setChecked] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
 
   const formSubmitHandler = async (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    setLoading(true);
     const response = await axios.get(
       `https://api.tvmaze.com/search/shows?q=${userSearch}`
     );
     setTVShows(response.data);
+    console.log(response.data);
     setFormIsSubmitted(true);
+    setLoading(false);
     setChecked(true);
-    setUserSearch("");
   };
 
   return (
@@ -48,7 +61,12 @@ const SearchForm = () => {
           margin: 3,
         }}
       >
-        <Typography variant="h4" marginTop={2} fontWeight="bold">
+        <Typography
+          variant="h4"
+          marginTop={2}
+          fontWeight="bold"
+          fontFamily={"Roboto"}
+        >
           Type in a keyword to search TV shows !
         </Typography>
         <Box>
@@ -56,12 +74,13 @@ const SearchForm = () => {
             <TextField
               autoComplete="off"
               id="TV"
-              label="TV Show"
+              placeholder="Enter TV show name"
               variant="outlined"
               value={userSearch}
               onChange={(event) => setUserSearch(event.target.value)}
               sx={{ marginTop: 2, color: "black" }}
             />
+
             <Button
               variant="contained"
               color="secondary"
@@ -69,25 +88,28 @@ const SearchForm = () => {
               sx={{
                 display: "block",
                 marginTop: 1,
-                padding: 2,
+                padding: 1,
                 fontSize: "1.5rem",
                 borderRadius: "20px",
                 width: "100%",
-                marginLeft: 0,
               }}
-              component="button"
             >
               Search
             </Button>
           </form>
         </Box>
       </Box>
-
+      {loading && (
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          {" "}
+          <CircularProgress sx={{ fontSize: "5rem" }} />
+        </Box>
+      )}
       {formIsSubmitted && (
         <Grow
           in={checked}
           style={{ transformOrigin: "0 0 0" }}
-          {...(checked ? { timeout: 2500 } : {})}
+          timeout={"auto"}
         >
           <Box
             display="flex"
@@ -108,12 +130,21 @@ const SearchForm = () => {
                 key={tvshow.show.id}
                 variant="outlined"
                 sx={{
-                  margin: "0.5em",
+                  margin: "0.5rem",
                   borderRadius: "15px",
                   background: "black",
                   color: "white",
+
+                  "&:hover": {
+                    cursor: "pointer",
+                    transition: "transform 0.3s ease-in-out",
+                    transform: "scale(1.01)",
+                  },
                 }}
                 color="primary"
+                onClick={() =>
+                  navigate("/details", { state: { tvshow: tvshow } })
+                }
               >
                 <CardContent>
                   <Box>
@@ -127,7 +158,6 @@ const SearchForm = () => {
                     <Typography
                       variant="h6"
                       fontWeight="bold"
-                      margin={0.5}
                       textAlign="center"
                       borderTop="2px solid lightgrey"
                       maxWidth={200}
